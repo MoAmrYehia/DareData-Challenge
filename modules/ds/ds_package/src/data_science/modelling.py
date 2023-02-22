@@ -5,7 +5,8 @@ from sklearn.preprocessing import OneHotEncoder
 import pickle
 from typing import Any
 import pandas as pd
-
+import glob
+import os
 
 class SimpleModel(MLEModel):
     ohe = None         # one-hot encoder for categorical features
@@ -14,17 +15,25 @@ class SimpleModel(MLEModel):
     def load(self, model_folder) -> Any:
         """Loads the model to memory. To be implemented by the data scientist.
         """
-        with open(f"{model_folder}/model.pkl", "rb") as f:
+        
+        list_of_model_files = glob.glob(f"{model_folder}/model_*")
+        list_of_ohe_files = glob.glob(f"{model_folder}/one_hot_encoder_*")
+        
+        latest_model_file = max(list_of_model_files, key=os.path.getctime)
+        latest_ohe_file = max(list_of_ohe_files, key=os.path.getctime)
+
+        
+        with open(f"{model_folder}/{latest_model_file}", "rb") as f:
             self.model = pickle.load(f)
-        with open(f"{model_folder}/one_hot_encoder.pkl", "rb") as f:
+        with open(f"{model_folder}/{latest_ohe_file}", "rb") as f:
             self.ohe = pickle.load(f)
 
-    def save(self, model_folder) -> None:
+    def save(self, model_folder, time_stamp) -> None:
         """Saves the model to a given location. To be implemented by the data scientist.
         """
-        with open(f"{model_folder}/model.pkl", "wb") as f:
+        with open(f"{model_folder}/model_{time_stamp}.pkl", "wb") as f:
             pickle.dump(self.model, f)
-        with open(f"{model_folder}/one_hot_encoder.pkl", "wb") as f:
+        with open(f"{model_folder}/one_hot_encoder_{time_stamp}.pkl", "wb") as f:
             pickle.dump(self.ohe, f)
 
     def _one_hot_encode(self, dataset: pd.DataFrame):

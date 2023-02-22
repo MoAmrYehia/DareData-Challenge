@@ -21,7 +21,7 @@ def main():
     print("Training the model...")
     model = SimpleModel()
     model.fit(dataset)
-    model.save(model_folder="/models")
+    model.save(model_folder="/models", time_stamp = str(time.strftime("%Y%m%d-%H%M%S")))
     print("Model saved and ready for deployment!")
 
 
