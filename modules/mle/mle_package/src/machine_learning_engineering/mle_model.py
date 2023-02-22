@@ -1,6 +1,8 @@
 from typing import Iterable, Any
 import pandas as pd
 from os.path import expanduser
+import logging
+import setup_logger
 
 
 class MLEModel():
@@ -49,3 +51,6 @@ class MLEModel():
 				f.write(f"{client_idx},{predicted_label}\n")
 		except FileNotFoundError:
 			print("Have you created the ~/mle_storage directory?")
+			
+        def logging (self):
+            logger.info('MLE class: doing something')
